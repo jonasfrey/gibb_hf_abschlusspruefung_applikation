@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UBahnApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54a2dd9dc561e571e4e358b535377cb6c5eb1ce0")]
 [assembly: System.Reflection.AssemblyProductAttribute("UBahnApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UBahnApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

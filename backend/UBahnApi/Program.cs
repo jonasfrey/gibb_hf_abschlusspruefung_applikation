@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UBahnApi.Data;
+using UBahnApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,5 +23,12 @@ app.UseCors();
 app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<UBahnContext>();
+    db.Database.Migrate();
+    await DataSeeder.SeedAsync(db);
+}
 
 app.Run();

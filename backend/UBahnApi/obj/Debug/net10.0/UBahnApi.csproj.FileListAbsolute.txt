@@ -123,3 +123,4 @@
 /home/jonas/code/gibb_hf_abschlusspruefung/backend/UBahnApi/obj/Debug/net10.0/UBahnApi.genruntimeconfig.cache
 /home/jonas/code/gibb_hf_abschlusspruefung/backend/UBahnApi/obj/Debug/net10.0/ref/UBahnApi.dll
 /home/jonas/code/gibb_hf_abschlusspruefung/backend/UBahnApi/bin/Debug/net10.0/dotnet-tools.json
+/home/jonas/code/gibb_hf_abschlusspruefung/backend/UBahnApi/obj/Debug/net10.0/UBahnApi.sourcelink.json
