@@ -24,6 +24,8 @@ app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 
+DbBootstrapper.EnsureDatabaseAndUser(app.Configuration);
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<UBahnContext>();
