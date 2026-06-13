@@ -1,0 +1,6 @@
+@UBahnApi_HostAddress = http://localhost:5082
+
+GET {{UBahnApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

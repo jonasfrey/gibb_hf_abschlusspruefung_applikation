@@ -1,0 +1,166 @@
+@base = http://localhost:5000
+
+### Health Check
+GET {{base}}/health
+
+### ============================================================
+### LINIEN anlegen
+### ============================================================
+
+### Linie 1: Hauptlinie
+POST {{base}}/api/linien
+Content-Type: application/json
+
+{ "name": "Hauptlinie" }
+
+### Linie 2: Stadtlinie
+POST {{base}}/api/linien
+Content-Type: application/json
+
+{ "name": "Stadtlinie" }
+
+### Alle Linien abrufen
+GET {{base}}/api/linien
+
+### ============================================================
+### STATIONEN anlegen (LinieId 1 = Hauptlinie, LinieId 2 = Stadtlinie)
+### ============================================================
+
+### Hauptlinie – Station 1: Parkhaus
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Parkhaus", "linieId": 1, "position": 1 }
+
+### Hauptlinie – Station 2: Einkaufsstrasse
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Einkaufsstrasse", "linieId": 1, "position": 2 }
+
+### Hauptlinie – Station 3: Hauptbahnhof
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Hauptbahnhof", "linieId": 1, "position": 3 }
+
+### Hauptlinie – Station 4: Flughafen
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Flughafen", "linieId": 1, "position": 4 }
+
+### Stadtlinie – Station 1: Oberstadt
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Oberstadt", "linieId": 2, "position": 1 }
+
+### Stadtlinie – Station 2: Hauptbahnhof (Stadtlinie)
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Hauptbahnhof", "linieId": 2, "position": 2 }
+
+### Stadtlinie – Station 3: Museum
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Museum", "linieId": 2, "position": 3 }
+
+### Stadtlinie – Station 4: Unterstadt
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Unterstadt", "linieId": 2, "position": 4 }
+
+### Alle Stationen abrufen
+GET {{base}}/api/stationen
+
+### ============================================================
+### FAHRZEITEN erfassen
+### (VonStationId / NachStationId gemäss obiger Reihenfolge)
+### Hauptlinie: IDs 1-4, Stadtlinie: IDs 5-8
+### ============================================================
+
+### Parkhaus → Einkaufsstrasse: 4 min
+POST {{base}}/api/fahrzeiten
+Content-Type: application/json
+
+{ "vonStationId": 1, "nachStationId": 2, "dauerMinuten": 4 }
+
+### Einkaufsstrasse → Hauptbahnhof: 7 min
+POST {{base}}/api/fahrzeiten
+Content-Type: application/json
+
+{ "vonStationId": 2, "nachStationId": 3, "dauerMinuten": 7 }
+
+### Hauptbahnhof → Flughafen: 9 min
+POST {{base}}/api/fahrzeiten
+Content-Type: application/json
+
+{ "vonStationId": 3, "nachStationId": 4, "dauerMinuten": 9 }
+
+### Oberstadt → Hauptbahnhof (Stadtlinie): 5 min
+POST {{base}}/api/fahrzeiten
+Content-Type: application/json
+
+{ "vonStationId": 5, "nachStationId": 6, "dauerMinuten": 5 }
+
+### Hauptbahnhof (Stadtlinie) → Museum: 2 min
+POST {{base}}/api/fahrzeiten
+Content-Type: application/json
+
+{ "vonStationId": 6, "nachStationId": 7, "dauerMinuten": 2 }
+
+### Museum → Unterstadt: 3 min
+POST {{base}}/api/fahrzeiten
+Content-Type: application/json
+
+{ "vonStationId": 7, "nachStationId": 8, "dauerMinuten": 3 }
+
+### Alle Fahrzeiten abrufen
+GET {{base}}/api/fahrzeiten
+
+### ============================================================
+### FAHRTABFRAGE: Parkhaus → Hauptbahnhof
+### Erwartung: 11 min, 1 Zwischenstation (Einkaufsstrasse)
+### ============================================================
+
+GET {{base}}/api/fahrt?start=1&ziel=3
+
+### ============================================================
+### CRUD-TEST: Station bearbeiten
+### ============================================================
+
+### Station 1 (Parkhaus) umbenennen
+PUT {{base}}/api/stationen/1
+Content-Type: application/json
+
+{ "name": "Parkhaus Nord", "linieId": 1, "position": 1 }
+
+### Station 1 zurückbenennen
+PUT {{base}}/api/stationen/1
+Content-Type: application/json
+
+{ "name": "Parkhaus", "linieId": 1, "position": 1 }
+
+### ============================================================
+### CRUD-TEST: Station löschen und wieder anlegen
+### ============================================================
+
+### Teststation anlegen
+POST {{base}}/api/stationen
+Content-Type: application/json
+
+{ "name": "Teststation", "linieId": 1, "position": 99 }
+
+### Teststation löschen (ID anpassen falls nötig)
+DELETE {{base}}/api/stationen/9
+
+### ============================================================
+### FEHLERFALL: Stationen auf unterschiedlichen Linien
+### Erwartung: 400 Bad Request
+### ============================================================
+
+GET {{base}}/api/fahrt?start=1&ziel=7
