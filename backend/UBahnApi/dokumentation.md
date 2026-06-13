@@ -10,13 +10,17 @@ UBahnApi/
 │   ├── FahrzeitenController.cs  – CRUD für Fahrzeiten
 │   └── FahrtController.cs       – Fahrtabfrage (GET /api/fahrt)
 ├── Data/
-│   └── UBahnContext.cs          – EF Core DbContext (MariaDB)
+│   ├── UBahnContext.cs          – EF Core DbContext (MariaDB)
+│   ├── DbBootstrapper.cs        – legt DB + admin-User beim Start an (als root)
+│   └── DataSeeder.cs            – befüllt das U-Bahn-Netz, falls DB leer
 ├── DTOs/                        – Request/Response-Objekte (Records)
 ├── Models/                      – Entitäten (Linie, Station, Fahrzeit)
 ├── Migrations/                  – EF Core Code-First Migrationen
-├── appsettings.json             – Verbindungsstring, Port 5000
-├── Program.cs                   – App-Setup: Swagger, CORS, EF, Routing
-└── ubahn-test.http              – HTTP-Testskript (VS Endpoint Explorer)
+├── appsettings.json             – Verbindungsstring, Bootstrap, Port 5000
+├── Program.cs                   – App-Setup: Swagger, CORS, EF, Bootstrap, Seed
+├── ubahn-test.http              – HTTP-Testskript (VS Endpoint Explorer)
+├── api-test.js                  – JS-Testskript für die Browser-Konsole
+└── testing-dokumentation.md     – Dokumentation des Testings
 ```
 
 ## Datenbankschema
@@ -31,7 +35,31 @@ UBahnApi/
 - `Position` in Station: ganzzahlige Reihenfolge auf der Linie, frei wählbar. Ermöglicht flexibles Einfügen ohne Renaming.
 - `Fahrzeit` als separate Tabelle: die Anforderungen verlangen CRUD für Fahrzeiten unabhängig von Stationen.
 - `OnDelete(Restrict)` bei Fahrzeit→Station: verhindert stilles Löschen von Fahrzeiten wenn Stationen gelöscht werden. Der StationenController löscht explizit betroffene Fahrzeiten vor dem Stationslöschen.
-- `OnDelete(Cascade)` bei Station→Linie: wenn eine Linie gelöscht wird, werden alle Stationen (und deren Fahrzeiten) automatisch entfernt.
+- `OnDelete(Cascade)` bei Station→Linie: wenn eine Linie gelöscht wird, werden alle Stationen automatisch entfernt. Da der FK Fahrzeit→Station auf `Restrict` steht, löscht der `LinienController` die abhängigen Fahrzeiten zuvor explizit.
+
+## Lösch-Verhalten Linie mit Stationen
+
+Beim Löschen einer Linie werden ihre Stationen **und** deren Fahrzeiten
+mitgelöscht (kaskadierend). Begründung: Eine Linie ohne Stationen ist fachlich
+bedeutungslos, verwaiste Stationen ohne Linie wären inkonsistent. Diese
+Entscheidung ist identisch im Frontend (WEB2) umgesetzt.
+
+## Automatische Initialisierung beim Start
+
+Damit `dotnet run` ohne manuelle Schritte funktioniert, läuft beim Start:
+
+1. **Bootstrap** (`DbBootstrapper`): verbindet sich als `root` und legt – falls
+   nötig – die Datenbank `UBahn` sowie den User `admin` (mit Rechten) an. Sind
+   beide bereits vorhanden (z.B. auf der Prüfungs-VM), wird der Schritt still
+   übersprungen.
+2. **Migration** (`db.Database.Migrate()`): wendet die EF-Migrationen an und
+   erstellt die Tabellen.
+3. **Seed** (`DataSeeder`): befüllt das vollständige U-Bahn-Netz (2 Linien,
+   8 Stationen, 6 Fahrzeiten), sofern noch keine Linien existieren.
+
+Das root-Passwort für den Bootstrap steht in `appsettings.json` unter
+`Bootstrap:RootPassword` (Standard leer). Auf Maschinen mit gesetztem
+root-Passwort wird es in `appsettings.Development.json` überschrieben.
 
 ## Endpunkte
 
@@ -77,16 +105,24 @@ UBahnApi/
 
 ## Starten
 
+Voraussetzung: MariaDB läuft. Datenbank und User werden automatisch angelegt
+(siehe «Automatische Initialisierung»).
+
 ```bash
 cd backend/UBahnApi
-dotnet ef database update   # Migration auf DB anwenden
 dotnet run                  # Start auf http://localhost:5000
 # Swagger: http://localhost:5000/swagger
 ```
 
+Migration und Seed laufen automatisch – kein manuelles `dotnet ef database update`
+nötig.
+
 # Testing 
-Das testing wird ueber einen browser und die dev tools durchgefuehrt. 
-Dann wird das js script api-test.js verwendet. 
+Das Testing wird über einen Browser und die Dev-Tools durchgeführt.
+Dazu wird das JS-Skript `api-test.js` in der Browser-Konsole ausgeführt; es legt
+eine eigene Test-Linie an, prüft alle CRUD-Operationen samt Verifikation und
+räumt am Ende wieder auf. Ergänzend bildet `ubahn-test.http` das vollständige
+U-Bahn-Netz nach. Details siehe `testing-dokumentation.md`.
 
 # KI 
 es wurde das KI tool claude code verwendet um beim programmieren und dokumentieren zu helfen
