@@ -1,0 +1,23 @@
+# Reverse Proxy für den U-Bahn-Stack.
+# HTTPS-Terminierung für ubahn.local mit dem lokalen mkcert-Zertifikat.
+# Routing: API-/Health-/Swagger-Anfragen -> Backend, alles andere -> Frontend.
+
+ubahn.local {
+	tls /etc/caddy/certs/ubahn.local.pem /etc/caddy/certs/ubahn.local-key.pem
+
+	# Backend-Anfragen
+	@backend path /api/* /health /swagger*
+	handle @backend {
+		reverse_proxy backend:5000
+	}
+
+	# Alles andere -> statisches Frontend
+	handle {
+		reverse_proxy frontend:80
+	}
+
+	# Zugriffslogs auf stdout
+	log {
+		output stdout
+	}
+}

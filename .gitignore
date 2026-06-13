@@ -13,6 +13,9 @@ frontend/.env.local
 # Docker / Secrets (nur Root-.env mit DB-Passwoertern; frontend/.env ist harmlos)
 /.env
 
+# TLS-Zertifikate (lokal mit mkcert erzeugt, nicht ins Repo)
+deploy/certs/*.pem
+
 # Abgabe-ZIPs
 *.zip
 

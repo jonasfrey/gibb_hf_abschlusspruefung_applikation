@@ -23,18 +23,60 @@ services:
     restart: unless-stopped
     environment:
       ConnectionStrings__UBahn: "Server=db;Port=3306;Database=${MYSQL_DATABASE};User=${MYSQL_USER};Password=${MYSQL_PASSWORD};"
-    ports:
-      - "5000:5000"
+      # Bootstrap idempotent gegen die DB (User/DB existieren bereits via MariaDB-Image)
+      Bootstrap__Server: db
+      Bootstrap__Port: "3306"
+      Bootstrap__RootUser: root
+      Bootstrap__RootPassword: ${MYSQL_ROOT_PASSWORD}
+      Bootstrap__Database: ${MYSQL_DATABASE}
+      Bootstrap__AppUser: ${MYSQL_USER}
+      Bootstrap__AppPassword: ${MYSQL_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     networks:
       - internal
 
-  # frontend und proxy werden nach WEB2 ergänzt
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./deploy/certs:/etc/caddy/certs:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - internal
 
 volumes:
   db_data:
+  caddy_data:
+  caddy_config:
 
 networks:
   internal:
