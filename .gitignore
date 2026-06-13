@@ -1,0 +1,21 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+backend/**/.vs/
+backend/**/appsettings.Development.json
+
+# Node / Vue
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Docker / Secrets
+.env
+
+# Abgabe-ZIPs
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db
