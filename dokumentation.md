@@ -115,6 +115,9 @@ und lokale Konfigurationsdateien nicht ins Image wandern.
 - **Datenbank:** Compose-Healthcheck via `healthcheck.sh --connect
   --innodb_initialized` (MariaDB-Image).
 - **Frontend:** zusätzlicher Healthcheck via `wget --spider`.
+- **Proxy:** interner Health-Endpunkt `:2021/healthz` (nur im Container), via
+  `wget --spider` geprüft, damit `docker compose ps` auch für den Proxy
+  `healthy` zeigt.
 - `depends_on` mit `condition: service_healthy` stellt sicher, dass das Backend
   erst nach der DB und der Proxy erst nach gesundem Backend startet.
 

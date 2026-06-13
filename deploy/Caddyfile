@@ -2,6 +2,12 @@
 # HTTPS-Terminierung für ubahn.local mit dem lokalen mkcert-Zertifikat.
 # Routing: API-/Health-/Swagger-Anfragen -> Backend, alles andere -> Frontend.
 
+# Interner HTTP-Health-Endpunkt (nur im Container, nicht nach aussen)
+# für den Compose-Healthcheck des Proxys.
+:2021 {
+	respond /healthz "ok" 200
+}
+
 ubahn.local {
 	tls /etc/caddy/certs/ubahn.local.pem /etc/caddy/certs/ubahn.local-key.pem
 

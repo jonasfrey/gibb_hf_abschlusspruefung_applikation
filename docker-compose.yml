@@ -70,6 +70,11 @@ services:
       - ./deploy/certs:/etc/caddy/certs:ro
       - caddy_data:/data
       - caddy_config:/config
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:2021/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - internal
 
