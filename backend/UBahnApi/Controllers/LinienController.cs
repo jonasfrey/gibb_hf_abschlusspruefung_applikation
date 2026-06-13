@@ -69,8 +69,19 @@ public class LinienController(UBahnContext db) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var linie = await db.Linien.FindAsync(id);
+        var linie = await db.Linien
+            .Include(l => l.Stationen)
+            .FirstOrDefaultAsync(l => l.Id == id);
         if (linie is null) return NotFound();
+
+        // Fahrzeiten der zugehoerigen Stationen zuerst entfernen,
+        // da der FK Fahrzeit->Station auf Restrict steht und sonst das
+        // Kaskaden-Loeschen der Stationen blockiert.
+        var stationIds = linie.Stationen.Select(s => s.Id).ToList();
+        var fahrzeiten = db.Fahrzeiten
+            .Where(f => stationIds.Contains(f.VonStationId) || stationIds.Contains(f.NachStationId));
+        db.Fahrzeiten.RemoveRange(fahrzeiten);
+
         db.Linien.Remove(linie);
         await db.SaveChangesAsync();
         return NoContent();
