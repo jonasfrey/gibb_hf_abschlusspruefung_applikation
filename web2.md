@@ -112,7 +112,7 @@ Fahrtabfrage
 Eingabe von Start und Ziel mit dem Resultat darunter. Das Resultat zeigt Fahrzeit, Anzahl Stationen und Zwischenstationen
 
 Admin: Station bearbeiten
-![alt text](web2_mockup_Admin:Stationbearbeiten.png)
+![alt text](web2_mockup_AdminStationbearbeiten.png)
 
 Formular zum Bearbeiten einer Station. Zwei Felder enthalten ungültige Eingaben und zeigen Validierungsfehler. Das Speichern ist deaktiviert. Die Mockups zeigen das visuelle Verhalten bei Validierungsfehlern, die konkreten Regeln entscheidest du
 
