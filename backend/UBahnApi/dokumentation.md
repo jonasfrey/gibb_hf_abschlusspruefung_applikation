@@ -83,3 +83,10 @@ dotnet ef database update   # Migration auf DB anwenden
 dotnet run                  # Start auf http://localhost:5000
 # Swagger: http://localhost:5000/swagger
 ```
+
+# Testing 
+Das testing wird ueber einen browser und die dev tools durchgefuehrt. 
+Dann wird das js script api-test.js verwendet. 
+
+# KI 
+es wurde das KI tool claude code verwendet um beim programmieren und dokumentieren zu helfen

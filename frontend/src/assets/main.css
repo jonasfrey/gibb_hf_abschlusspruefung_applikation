@@ -1,0 +1,123 @@
+/* ============================================================
+   Design-System – U-Bahn Webanwendung
+   Zentrale Farb-, Typ- und Abstandsvariablen, konsistent genutzt.
+   ============================================================ */
+
+:root {
+  /* Linienfarben (entsprechen der Streckengrafik) */
+  --linie-haupt: #2f7fd1;   /* blau */
+  --linie-stadt: #41b95f;   /* gruen */
+  --umsteige:    #e8a72e;   /* Hervorhebung Umsteigestation */
+
+  /* UI-Palette */
+  --bg:        #f5f7fa;
+  --surface:   #ffffff;
+  --border:    #d9dee5;
+  --text:      #1f2733;
+  --text-mut:  #66707d;
+  --primary:   #2f7fd1;
+  --primary-d: #245f9c;
+  --danger:    #d34a4a;
+  --danger-d:  #b13a3a;
+  --ok:        #2e8b4f;
+
+  /* Abstaende / Radius */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+h1, h2, h3 { line-height: 1.2; margin: 0 0 var(--sp-3); }
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.25rem; }
+
+a { color: var(--primary); }
+
+/* ---------- Buttons ---------- */
+.btn {
+  font: inherit;
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  transition: background .15s, box-shadow .15s;
+}
+.btn:hover { background: var(--primary-d); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { background: #eef1f5; }
+.btn-danger { background: var(--danger); }
+.btn-danger:hover { background: var(--danger-d); }
+.btn-sm { padding: var(--sp-1) var(--sp-2); font-size: .85rem; }
+
+/* ---------- Karten ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--sp-5);
+}
+
+/* ---------- Formularfelder ---------- */
+.field { margin-bottom: var(--sp-4); }
+.field label { display: block; font-weight: 600; margin-bottom: var(--sp-1); font-size: .9rem; }
+.field input, .field select {
+  font: inherit;
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+}
+.field input.invalid, .field select.invalid { border-color: var(--danger); }
+.field .err { color: var(--danger); font-size: .82rem; margin-top: var(--sp-1); }
+
+/* ---------- Tabellen ---------- */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: var(--sp-2) var(--sp-3); border-bottom: 1px solid var(--border); }
+th { font-size: .85rem; color: var(--text-mut); text-transform: uppercase; letter-spacing: .03em; }
+
+/* ---------- Sichtbarer Fokus-Indikator (Accessibility) ---------- */
+:focus-visible {
+  outline: 3px solid var(--umsteige);
+  outline-offset: 2px;
+}
+
+/* ---------- Hilfsklassen ---------- */
+.muted { color: var(--text-mut); }
+.row { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+.badge {
+  display: inline-block;
+  padding: 2px var(--sp-2);
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  color: #fff;
+}
+.alert {
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius);
+  margin: var(--sp-3) 0;
+}
+.alert-info { background: #e7f0fa; color: #1c4a78; }
+.alert-warn { background: #fdf1dc; color: #8a5a00; }
+.alert-error { background: #fbe5e5; color: #8c2020; }
