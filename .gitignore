@@ -10,8 +10,8 @@ frontend/node_modules/
 frontend/dist/
 frontend/.env.local
 
-# Docker / Secrets
-.env
+# Docker / Secrets (nur Root-.env mit DB-Passwoertern; frontend/.env ist harmlos)
+/.env
 
 # Abgabe-ZIPs
 *.zip
